@@ -16,40 +16,26 @@
 #     limitations under the License.                                                            
 #
 ###############################################################################
-version: "3.2"
 
-services:
-  oracle:
-    image: daerepository03.eur.ad.sag:4443/ccdevops/oracle:11.1
-    environment: 
-      - ORACLE_ALLOW_REMOTE=true
+ARG BUILDER_IMAGE
+ARG NODE_IMAGE
+FROM $NODE_IMAGE as node
+FROM $BUILDER_IMAGE as builder
 
-  is1:
-    image: daerepository03.eur.ad.sag:4443/ccdevops/integration-server:$TAG # target image
-    ports:
-      - 5555
+# WORKDIR $CC_HOME
+# USER 1724
+# add all templates
+# ADD --chown=1724:1724 templates/ profiles/CCE/data/templates/composite/
+# replace default scripts
+# ADD --chown=1724:1724 scripts/*.sh ./
 
-  is2:
-    image: daerepository03.eur.ad.sag:4443/ccdevops/integration-server:$TAG # target image
-    ports:
-      - 5555
+# add licenses.zip, if any
+# ADD --chown=1724:1724 licenses/*.zip ./licenses/
 
-  init: # init container
-    image: daerepository03.eur.ad.sag:4443/ccdevops/commandcentral-client:$TAG-antcc
-    volumes: 
-      - ../../clients/docker.properties:/root/.sag/cc.properties
-      - ../../environments/:/src/environments/
-    environment: 
-      - CC_SERVER=cc
-      - CC_ENV=dev   
-    command:
-      antcc waitnodes oracledb -Dnodes=is1:sag-is-cluster_is1_1,is2:sagiscluster_is2_1
-    depends_on: 
-      - oracle
-      - is1
-      - is2
+# Copy target node from the $NODE_IMAGE
+COPY --from=node --chown=1724:1724 $SAG_HOME/ $SAG_HOME/
 
-networks:
-  default:
-    external:
-      name: sagdevops-templates_default
+# configure repos and add licenses
+RUN $CC_HOME/provision.sh sag-empty
+
+WORKDIR /src

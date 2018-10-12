@@ -1,5 +1,6 @@
-###############################################################################
-#  Copyright 2013 - 2018 Software AG, Darmstadt, Germany and/or its licensors
+#!/bin/sh -e
+#*******************************************************************************
+#  Copyright � 2013 - 2018 Software AG, Darmstadt, Germany and/or its licensors
 #
 #   SPDX-License-Identifier: Apache-2.0
 #
@@ -15,16 +16,13 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.                                                            
 #
-###############################################################################
-version: "3.2"
+#*******************************************************************************
 
-services:
-  node:
-    build:
-      args:
-        - CC_INSTALLER=${CC_INTALLER:-cc-def-10.2-fix2-lnxamd64}
+# point to local SPM
+export CC_SERVER=cc
 
-  builder:
-    build:
-      args:
-        - REPO_PRODUCT=${REPO_PRODUCT:-102apr2018_SIC}
+sagcc list administration product node DatabaseComponentConfigurator database catalog \
+    db.type=oracle db.username=webm db.password=webm db.name=webm db.url="jdbc:wm:oracle://oracle:1521;SID=XE" \
+    -e "ISI & MWS & PRE"    
+
+echo "TEST SUCCESSFUL"
