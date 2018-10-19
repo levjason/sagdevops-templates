@@ -1,0 +1,75 @@
+###############################################################################
+#  Copyright 2013 - 2018 Software AG, Darmstadt, Germany and/or its licensors
+#
+#   SPDX-License-Identifier: Apache-2.0
+#
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.                                                            
+#
+###############################################################################
+
+alias: sag-db-mysql
+description: MySQL database and component schemas
+
+environments:
+  default:  
+    db.fixes:           []                 # Database component configurator fixes to install 
+    driver.name:        mysql-connector-java-5.1.44-bin.jar     
+
+        
+
+layers:
+  default:
+    productRepo: ${repo.product}            # install products from
+    fixRepo:     ${repo.fix}                # install fixes from
+  db1:
+    description:  Install the DCC then the mysql JDBC driver 
+    templates:   
+      - dbcInstall
+      - dbcInstallJdbcDriver
+  db2:
+    description:  Create the webMethods db components on mysql
+    databases:
+      dbProducts:
+        description:  create schema for products
+        components:    
+              - ProcessAudit
+              - ProcessEngine
+              - DynamicBusinessOrchestrator
+              - OperationManagement
+              - ISInternal
+              - ISCoreAudit
+        version:     latest
+        db.type:     ${db.type}
+        db.url:      ${db.url}/${db.name}
+        db.username: ${db.admin.user}
+        db.password: ${db.admin.password}
+        db.name:     ${db.name}      
+    
+
+
+    
+templates:
+  dbcInstall:
+    products:
+      DatabaseComponentConfigurator:
+    fixes: ${db.fixes}
+  dbcInstallJdbcDriver:
+    files:
+      "common/lib/ext/${driver.name}": "jars/${driver.name}"
+      "common/db/bin/setEnv.sh":   "setEnv.sh"
+
+provision:
+  default:
+    db1: node
+    db2: node
+
