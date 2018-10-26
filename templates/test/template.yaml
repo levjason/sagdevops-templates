@@ -1,0 +1,17 @@
+alias: test
+
+environments:
+  default:
+    hello.name: World
+    thing:  Mercury
+    actions:
+      doit.sh: 
+         phase: pre
+         target: POSIX
+         script: > 
+              if [ -f /opt/softwareag/AgileApps/configurationPanel/installation.properties ] ; then rm /opt/softwareag/AgileApps/configurationPanel/installation.properties ; fi &&
+              mkdir -p /opt/softwareag/AgileApps/configurationPanel &&
+              touch /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+              echo "# Specify MYSQL parmeters" >> /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+              sed -i '$ a mysql_username= ${thing}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+              cat /opt/softwareag/AgileApps/configurationPanel/installation.properties 

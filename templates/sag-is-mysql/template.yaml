@@ -1,0 +1,87 @@
+###############################################################################
+#  Copyright 2013 - 2018 Software AG, Darmstadt, Germany and/or its licensors
+#
+#   SPDX-License-Identifier: Apache-2.0
+#
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.                                                            
+#
+###############################################################################
+alias: sag-is-mysql
+description: Provisioning IS using MySQL community edition
+
+environments:
+  default:
+    is.version:         10.3                # REQUIRED: target release, e.g. 10.3
+    is.instance.name:   default             # IS instance name to provision on top
+    is.instance.type:   integrationServer   # IS instance type: MSC or integrationServer
+    dap.fixes:          []                  # dap default fix list
+    is.integrationserver.license.key: "*_PIE_10.*_*_*"  # IS license key
+    is.primary.port:    5555                # Primary port number
+    is.diagnostic.port: 9999                # Dialgnostic port number
+    is.jmx.port:        8094                # JMX port number
+    is.memory.init:     128                 # Initial memory size
+    is.memory.max:      256                 # Maximum memory size
+    is.install.service: false
+    is.fixes:           [wMFix.integrationServer.Core]
+    db.type:            ${db.type}
+    db.url:             ${db.url}/${db.name}
+    db.username:        ${db.username}
+    db.password:        ${db.password}
+    db.alias:           Default
+
+layers:
+  default:
+    productRepo: ${repo.product}            # install products from
+    fixRepo:     ${repo.fix}                # install fixes from
+  installIS:
+    description:  IS configured for MySQL CE
+    templates:
+      - IS1
+      - IS2
+
+templates:
+  IS1:
+    description:  Install IS 
+    licenses:
+          "IntegrationServer/config/licenseKey.xml": "${is.integrationserver.license.key}" 
+    fixes: ${is.fixes}
+    products:
+      integrationServer:
+        ${is.instance.name}: 
+          primary.port:    ${is.primary.port}
+          diagnostic.port: ${is.diagnostic.port}
+          jmx.port:        ${is.jmx.port}
+          license.file:    IntegrationServer/config/licenseKey.xml
+          install.service: ${is.install.service}
+          db.type:         ${db.type}
+          db.url:          ${db.url}/${db.name}
+          db.username:     ${db.username}
+          db.password:     ${db.password}
+          db.alias:        Default
+          configuration:
+            OSGI-IS_${instance.name}:
+              COMMON-MEMORY:
+                COMMON-MEMORY:
+                  InitSize: ${is.memory.init}
+                  MaxSize:  ${is.memory.max}
+  IS2:
+    description: Put the mysql JDBC driver in IS classpath
+    files:
+      "IntegrationServer/instances/${is.instance.name}/bin/ini.cnf": "ini${is.version}.cnf"
+
+
+
+provision:
+  default:
+    installIS: node
+
