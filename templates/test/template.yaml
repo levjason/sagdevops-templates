@@ -9,9 +9,17 @@ environments:
          phase: pre
          target: POSIX
          script: > 
-              if [ -f /opt/softwareag/AgileApps/configurationPanel/installation.properties ] ; then rm /opt/softwareag/AgileApps/configurationPanel/installation.properties ; fi &&
-              mkdir -p /opt/softwareag/AgileApps/configurationPanel &&
-              touch /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-              echo "# Specify MYSQL parmeters" >> /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-              sed -i '$ a mysql_username= ${thing}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-              cat /opt/softwareag/AgileApps/configurationPanel/installation.properties 
+             if [ -f /opt/softwareag/AgileApps/configurationPanel/installation.properties ] ; then rm /opt/softwareag/AgileApps/configurationPanel/installation.properties ; fi &&
+             mkdir -p /opt/softwareag/AgileApps/configurationPanel &&
+             touch /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             echo "# Specify MYSQL parmeters" >> /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             sed -i '$ a mysql_port= ${db.port}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             sed -i '$ a mysql_username= ${db.username}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             sed -i '$ a mysql_password= ${db.password}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             sed -i '$ a mysql_host= ${db.host}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             sed -i '$ a host= ${db.host}.eur.ad.sag' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             sed -i '$ a cacheType=2' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             sed -i '$ a install_dir=/opt/softwareag' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+             sed -i '$ a license.file=${agileApps.license.key}' /opt/softwareag/AgileApps/configurationPanel/installation.properties
+#             sed -i '$ a mysql.jar.file=/opt/softwareag/common/lib/ext/mysql-connector-java-5.1.44-bin.jar' /opt/softwareag/AgileApps/configurationPanel/installation.properties
+#             cat /opt/softwareag/AgileApps/configurationPanel/installation.properties 

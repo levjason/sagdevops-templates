@@ -16,7 +16,7 @@
 #     limitations under the License.                                                            
 #
 ###############################################################################
-alias: sag-is-dap
+alias: sag-dap
 description: dap provisioning on top of IS instance
 
 environments:
@@ -37,75 +37,43 @@ environments:
     is.fixes:           [wMFix.integrationServer.Core]
     db.type:            ${db.type}
     db.url:             ${db.url}/${db.name}
-    db.username:        ${db.username}
-    db.password:        ${db.password}
+    db.username:        ${db.admin.user}     #root needed to create AgileApps databases remotely
+    db.password:        ${db.admin.password}
     db.alias:           Default
+    actions:
+      AgileAppsProperties.sh: 
+        phase: post
+        target: POSIX
+        script: 
+           #!/bin/sh
+           if [ -f /opt/softwareag/AgileApps/configurationPanel/installation.properties ] ; then rm /opt/softwareag/AgileApps/configurationPanel/installation.properties ; fi &&
+           mkdir -p /opt/softwareag/AgileApps/configurationPanel &&
+           touch /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+           echo "# Specify MYSQL parmeters" >> /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+           sed -i '$ a mysql_port= ${db.port}' /opt/softwareag/AgileApps/configurationPanel/installation.properties  &&
+           sed -i '$ a mysql_username= ${db.admin.user}' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
+           sed -i '$ a mysql_password= ${db.admin.password}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+           sed -i '$ a mysql_host= ${db.host}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+           sed -i '$ a host= ${db.host}' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
+           sed -i '$ a cacheType=2' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+           sed -i '$ a install_dir=/opt/softwareag' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
+           sed -i '$ a license.file=/opt/softwareag/AgileApps/licenseKey.xml' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
+           sed -i '$ a mysql.jar.file=/opt/softwareag/common/lib/ext/mysql-connector-java-5.1.44-bin.jar' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
+           cp   /opt/softwareag/common/lib/ext/mysql-connector-java-5.1.44-bin.jar /opt/softwareag/AgileApps/configurationPanel &&
+           cp   /opt/softwareag/AgileApps/licenseKey.xml /opt/softwareag/AgileApps/configurationPanel
 
 layers:
   default:
     productRepo: ${repo.product}            # install products from
     fixRepo:     ${repo.fix}                # install fixes from
-  installIS:
-    description:  First install IS configured for MySQL CE
-    templates:
-      - IS1
-      - IS2
   installDAP:
-    description:  Second install DAP
+    description:  Install DAP into an IS installed and configured for MySQL
     templates:
       - dap1
 
 templates:
-  IS1:
-    description:  Install IS configured for MySQL Community Edition
-    licenses:
-          "IntegrationServer/config/licenseKey.xml": "${is.integrationserver.license.key}" 
-    fixes: ${is.fixes}
-    products:
-      integrationServer:
-        ${is.instance.name}: 
-          primary.port:    ${is.primary.port}
-          diagnostic.port: ${is.diagnostic.port}
-          jmx.port:        ${is.jmx.port}
-          license.file:    IntegrationServer/config/licenseKey.xml
-          install.service: ${is.install.service}
-          db.type:         ${db.type}
-          db.url:          ${db.url}/${db.name}
-          db.username:     ${db.username}
-          db.password:     ${db.password}
-          db.alias:        Default
-          configuration:
-            OSGI-IS_${instance.name}:
-              COMMON-MEMORY:
-                COMMON-MEMORY:
-                  InitSize: ${is.memory.init}
-                  MaxSize:  ${is.memory.max}
-  IS2:
-    description: put the mysql JDBC driver in IS classpath
-    files:
-      "IntegrationServer/instances/${is.instance.name}/bin/ini.cnf": "ini${is.version}.cnf"
-
   dap1:
     description: Install DAP into IS
-    actions:
-      AgileAppsProperties.sh: 
-        phase: pre
-        target: POSIX
-        script: > 
-             if [ -f /opt/softwareag/AgileApps/configurationPanel/installation.properties ] ; then rm /opt/softwareag/AgileApps/configurationPanel/installation.properties ; fi &&
-             mkdir -p /opt/softwareag/AgileApps/configurationPanel &&
-             touch /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             echo "# Specify MYSQL parmeters" >> /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a mysql_port= ${db.port}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a mysql_username= ${db.username}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a mysql_password= ${db.password}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a mysql_host= ${db.host}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a host= ${db.host}.eur.ad.sag' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a cacheType=2' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a install_dir=/opt/softwareag' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a license.file='${agileApps.license.key}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             sed -i '$ a mysql.jar.file=/opt/softwareag/common/lib/ext/mysql-connector-java-5.1.44-bin.jar' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-             cat /opt/softwareag/AgileApps/configurationPanel/installation.properties 
     fixes: ${dap.fixes}
     products:
       LJP:
@@ -116,11 +84,12 @@ templates:
            diagnostic.port: ${is.diagnostic.port}
            package.list:    WmAgileApps
            runtimeComponentId: integrationServer-${instance.name} # hint to find existing instance by id
+ 
     licenses: 
       "IntegrationServer/instances/${is.instance.name}/packages/WmDBO/config/licenseKey.xml": "${dbo.license.key}"
+      "AgileApps/licenseKey.xml" : "${agileApps.license.key}"
 
 
 provision:
   default:
-    installIS: node
-    installDAP: local
+    installDAP: ${nodes}

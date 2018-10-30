@@ -24,7 +24,10 @@ FROM $NODE_IMAGE as node
 FROM $BUILDER_IMAGE as builder
 
 WORKDIR $CC_HOME
-
+#which and mysql client need to create AgileApps  databases
+USER root
+RUN yum install which -y
+RUN yum install mysql -y
 USER 1724
 
 # add all templates
@@ -42,5 +45,10 @@ COPY --from=node --chown=1724:1724 /opt/softwareag/ /opt/softwareag/
 RUN $CC_HOME/provision.sh
 
 ONBUILD ADD --chown=1724:1724 . .
+
+
+
+
+USER 1724
 
 WORKDIR /src

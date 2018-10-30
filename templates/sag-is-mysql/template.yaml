@@ -24,7 +24,6 @@ environments:
     is.version:         10.3                # REQUIRED: target release, e.g. 10.3
     is.instance.name:   default             # IS instance name to provision on top
     is.instance.type:   integrationServer   # IS instance type: MSC or integrationServer
-    dap.fixes:          []                  # dap default fix list
     is.integrationserver.license.key: "*_PIE_10.*_*_*"  # IS license key
     is.primary.port:    5555                # Primary port number
     is.diagnostic.port: 9999                # Dialgnostic port number
@@ -48,6 +47,7 @@ layers:
     templates:
       - IS1
       - IS2
+  
 
 templates:
   IS1:
@@ -80,8 +80,8 @@ templates:
       "IntegrationServer/instances/${is.instance.name}/bin/ini.cnf": "ini${is.version}.cnf"
 
 
-
 provision:
   default:
-    installIS: node
+    installIS: ${nodes}
+
 
