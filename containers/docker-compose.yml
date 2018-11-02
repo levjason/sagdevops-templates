@@ -88,7 +88,24 @@ services:
       - CC_AUTO_REGISTER               # No auto register as we don't have a server
     depends_on:
       - cc
-
+      
+  sag-dap:
+    image: ${REG:-softwareag}/sag-dap:${TAG:-10.3}
+    build:
+      context: sag-dap/
+      args:
+        - BUILDER_IMAGE=${REG:-softwareag}/commandcentral-builder:${TAG:-10.3}
+        - BASE_IMAGE=${REG:-softwareag}/java:${TAG:-10.3}
+    ports:
+      - 5555
+      - 8283                           # container specific ports
+      - 8284
+    hostname: sag-dap
+    environment:
+      - CC_AUTO_REGISTER               # No auto register as we don't have a server
+    depends_on:
+      - cc
+      
   microservices-runtime:
     image: ${REG:-softwareag}/microservices-runtime:$TAG # target image
     build:

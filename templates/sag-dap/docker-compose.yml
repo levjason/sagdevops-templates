@@ -78,6 +78,10 @@ services:
  
 #    depends_on: 
 #      - provisionIS
+  startDAP:
+    image: daerepository03.eur.ad.sag:4443/sagdevops/sag-dap:10.3
+    depends_on:
+       - mysql
 networks:
   default:
     external:

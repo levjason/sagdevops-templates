@@ -21,12 +21,13 @@ description: Provisioning IS using MySQL community edition
 
 environments:
   default:
+    driver.name:        mysql-connector-java-5.1.44-bin.jar 
     is.version:         10.3                # REQUIRED: target release, e.g. 10.3
     is.instance.name:   default             # IS instance name to provision on top
     is.instance.type:   integrationServer   # IS instance type: MSC or integrationServer
     is.integrationserver.license.key: "*_PIE_10.*_*_*"  # IS license key
     is.primary.port:    5555                # Primary port number
-    is.diagnostic.port: 9999                # Dialgnostic port number
+    is.diagnostic.port: 9999                # Diagnostic port number
     is.jmx.port:        8094                # JMX port number
     is.memory.init:     128                 # Initial memory size
     is.memory.max:      256                 # Maximum memory size
@@ -78,6 +79,7 @@ templates:
     description: Put the mysql JDBC driver in IS classpath
     files:
       "IntegrationServer/instances/${is.instance.name}/bin/ini.cnf": "ini${is.version}.cnf"
+      "common/lib/ext/${driver.name}": "jars/${driver.name}"
 
 
 provision:

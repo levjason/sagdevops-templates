@@ -42,7 +42,7 @@ environments:
     db.alias:           Default
     actions:
       AgileAppsProperties.sh: 
-        phase: post
+        phase: pre
         target: POSIX
         script: 
            #!/bin/sh
@@ -59,8 +59,7 @@ environments:
            sed -i '$ a install_dir=/opt/softwareag' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
            sed -i '$ a license.file=/opt/softwareag/AgileApps/licenseKey.xml' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
            sed -i '$ a mysql.jar.file=/opt/softwareag/common/lib/ext/mysql-connector-java-5.1.44-bin.jar' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-           cp   /opt/softwareag/common/lib/ext/mysql-connector-java-5.1.44-bin.jar /opt/softwareag/AgileApps/configurationPanel &&
-           cp   /opt/softwareag/AgileApps/licenseKey.xml /opt/softwareag/AgileApps/configurationPanel
+           cp   /opt/softwareag/common/lib/ext/mysql-connector-java-5.1.44-bin.jar /opt/softwareag/AgileApps/configurationPanel 
 
 layers:
   default:
@@ -87,7 +86,7 @@ templates:
  
     licenses: 
       "IntegrationServer/instances/${is.instance.name}/packages/WmDBO/config/licenseKey.xml": "${dbo.license.key}"
-      "AgileApps/licenseKey.xml" : "${agileApps.license.key}"
+      "AgileApps/configurationPanel/licenseKey.xml" : "${agileApps.license.key}"
 
 
 provision:
