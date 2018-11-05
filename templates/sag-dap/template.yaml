@@ -42,6 +42,7 @@ environments:
     db.alias:           Default
     actions:
       AgileAppsProperties.sh: 
+        description: populates panel with data needed to create an IS instance that includes AgileApps
         phase: pre
         target: POSIX
         script: 
@@ -54,7 +55,7 @@ environments:
            sed -i '$ a mysql_username= ${db.admin.user}' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
            sed -i '$ a mysql_password= ${db.admin.password}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
            sed -i '$ a mysql_host= ${db.host}' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
-           sed -i '$ a host= ${db.host}' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
+           sed -i '$ a host= ${db.hostName}' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
            sed -i '$ a cacheType=2' /opt/softwareag/AgileApps/configurationPanel/installation.properties &&
            sed -i '$ a install_dir=/opt/softwareag' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 
            sed -i '$ a license.file=/opt/softwareag/AgileApps/licenseKey.xml' /opt/softwareag/AgileApps/configurationPanel/installation.properties && 

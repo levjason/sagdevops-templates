@@ -64,6 +64,7 @@ templates:
       DatabaseComponentConfigurator:
     fixes: ${db.fixes}
   dbcInstallJdbcDriver:
+  # The file copies below should not be needed in 10.4
     files:
       "common/lib/ext/${driver.name}": "jars/${driver.name}"
       "common/db/bin/setEnv.sh":   "setEnv.sh"

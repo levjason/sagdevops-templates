@@ -28,13 +28,13 @@ ARG TEMPLATE=sag-is-mysql
 
 ARG __is_fixes=[]
 ARG __is_instance_name=default
-ARG __db_host=mysqlserver
-ARG __db_hostName=mysqlserver
+ARG __db_host=mysqlcontainer
+ARG __db_hostName=10.130.54.161 #this doesn't work! Has to be addressed by AA.
 ARG __db_type=MYSQLCE
 ARG __db_username=webmethods
 ARG __db_password=manage
 ARG __db_name=webm 
-ARG __db_url="jdbc:mysql://mysqlserver:3306"
+ARG __db_url="jdbc:mysql://mysqlcontainer:3306"
 ARG __db_admin.user=root
 ARG __db_admin.password=root
 ARG __db_port=3306
