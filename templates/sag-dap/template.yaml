@@ -27,14 +27,12 @@ environments:
     is.instance.name:   default             # IS instance name to provision on top
     is.instance.type:   integrationServer   # IS instance type: MSC or integrationServer
     dap.fixes:          []                  # dap default fix list
-    is.integrationserver.license.key: "*_PIE_10.*_*_*"  # IS license key
     is.primary.port:    5555                # Primary port number
     is.diagnostic.port: 9999                # Dialgnostic port number
     is.jmx.port:        8094                # JMX port number
     is.memory.init:     128                 # Initial memory size
     is.memory.max:      256                 # Maximum memory size
     is.install.service: false
-    is.fixes:           [wMFix.integrationServer.Core]
     db.type:            ${db.type}
     db.url:             ${db.url}/${db.name}
     db.username:        ${db.admin.user}     #root needed to create AgileApps databases remotely
@@ -78,11 +76,12 @@ templates:
     products:
       LJP:
       LJP_Ehcache:
+      WBD:
       ${is.instance.type}:
          ${is.instance.name}: 
            primary.port:    ${is.primary.port}
            diagnostic.port: ${is.diagnostic.port}
-           package.list:    WmAgileApps
+           package.list:    WmAgileApps, WmServiceDesigner, WmTaskDesigner, WmProcessWebDesigner
            runtimeComponentId: integrationServer-${instance.name} # hint to find existing instance by id
  
     licenses: 
