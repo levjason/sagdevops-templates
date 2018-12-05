@@ -128,7 +128,7 @@ services:
         - BUILDER_IMAGE=${REG:-softwareag}/commandcentral-builder:${TAG:-10.3}
         - BASE_IMAGE=${REG:-softwareag}/java:${TAG:-10.3}
         - __is_fixes=$FIXES             # [] or ALL, from the env
-        - TEMPLATE=sag-is-server
+        - TEMPLATE=sag-is-mysql
     ports:
       - 5555                            # container specific ports
     hostname: integration-server
