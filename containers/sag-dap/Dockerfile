@@ -26,7 +26,7 @@ FROM $BUILDER_IMAGE as builder
 ARG TEMPLATE=sag-is-mysql
 
 
-ARG __is_fixes=[]
+ARG __is_fixes=[wMFix.integrationServer.Core]
 ARG __is_instance_name=default
 ARG __db_host=mysqlcontainer
 ARG __db_hostName=localhost
