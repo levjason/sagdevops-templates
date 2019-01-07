@@ -76,11 +76,12 @@ templates:
     products:
       LJP:
       LJP_Ehcache:
+      WBD:
       ${is.instance.type}:
          ${is.instance.name}: 
            primary.port:    ${is.primary.port}
            diagnostic.port: ${is.diagnostic.port}
-           package.list:    WmAgileApps
+           package.list:    WmAgileApps,WmServiceDesigner,WmTaskDesigner,WmProcessWebDesigner
            runtimeComponentId: integrationServer-${instance.name} # hint to find existing instance by id
  
     licenses: 
