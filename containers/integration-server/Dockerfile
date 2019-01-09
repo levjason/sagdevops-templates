@@ -23,10 +23,18 @@ ARG BASE_IMAGE
 FROM $BUILDER_IMAGE as builder
 
 # can be sag-msc-server, sag-is-server or a custom one
-ARG TEMPLATE=sag-msc-server
+ARG TEMPLATE=sag-is-mysql
 
 ARG __is_fixes=[]
 ARG __is_instance_name=default
+ARG __db_type=MYSQLCE
+ARG __db_username=webm
+ARG __db_password=webm
+ARG __db_name=webm 
+ARG __db_url="jdbc:mysql://mysqlcontainer:3306"
+ARG __db_admin.user=root
+ARG __db_admin.password=root
+ARG __db_port=3306
 
 # provision and unit test
 RUN $CC_HOME/provision.sh $TEMPLATE && \
