@@ -28,17 +28,18 @@ ARG TEMPLATE=sag-is-mysql
 
 ARG __is_fixes=[wMFix.integrationServer.Core]
 ARG __is_instance_name=default
-ARG __db_host=mysql-dts.worker-daeirnd06.k8s.eur.ad.sag
-ARG __db_hostName=serverzbfiopzz-dap100-dap1-server-8284.worker-daeirnd06.k8s.eur.ad.sag
+ARG __is_memory_max=4096
+ARG __db_host=mysqlcontainer
+ARG __db_hostName=localhost
 ARG __db_type=MYSQLCE
 ARG __db_alias=Default
 ARG __db_username=root
 ARG __db_password=root
 ARG __db_name=webm 
-ARG __db_url="jdbc:mysql://mysql-dts.worker-daeirnd06.k8s.eur.ad.sag:30970/webm"
+ARG __db_url="jdbc:mysql://mysqlcontainer:3306"
 ARG __db_admin.user=root
 ARG __db_admin.password=root
-ARG __db_port=30970
+ARG __db_port=3306
 
 
 # provision and unit test
